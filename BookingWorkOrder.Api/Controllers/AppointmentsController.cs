@@ -32,4 +32,11 @@ public class AppointmentsController : ControllerBase
         var result = await _appointmentService.CreateAsync(request);
         return Ok(result);
     }
+
+    [HttpGet("my")]
+    public async Task<ActionResult<List<AppointmentListItemDto>>> GetMyAppointments()
+    {
+        var result = await _appointmentService.GetMyAppointmentsAsync();
+        return Ok(result);
+    }
 }

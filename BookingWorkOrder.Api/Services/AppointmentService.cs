@@ -1,6 +1,7 @@
 using BookingWorkOrder.Api.Data;
 using BookingWorkOrder.Api.Dtos.Appointments;
 using BookingWorkOrder.Api.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingWorkOrder.Api.Services;
 
@@ -35,5 +36,24 @@ public class AppointmentService
             Status = appointment.Status.ToString(),
             Message = "Appointment created successfully."
         };
+    }
+
+    public async Task<List<AppointmentListItemDto>> GetMyAppointmentsAsync()
+    {
+        var userId = 1;
+
+        return await _dbContext.Appointments
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Select(x => new AppointmentListItemDto
+            {
+                Id = x.Id,
+                AppointmentTime = x.AppointmentTime,
+                ServiceType = x.ServiceType,
+                Description = x.Description,
+                Status = x.Status.ToString(),
+                CreatedAt = x.CreatedAtUtc
+            })
+            .ToListAsync();
     }
 }
